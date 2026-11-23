@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои файлы</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6, #06b6d4);
+            padding: 32px 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
+            padding: 32px 36px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .logo { font-size: 24px; font-weight: 700; color: #1e3a8a; }
+        .logo span { color: #06b6d4; }
+
+        .user-block { display: flex; align-items: center; gap: 14px; }
+        .user-name { font-size: 14px; color: #64748b; font-weight: 600; }
+
+        .btn-logout {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            background: #ef4444;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-logout:hover { background: #dc2626; }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .upload {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .upload input[type="file"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 12px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .upload input[type="file"]:hover { border-color: #3b82f6; }
+
+        .btn-upload {
+            padding: 11px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-upload:hover { box-shadow: 0 8px 20px rgba(59,130,246,.35); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead { background: #f1f5f9; }
+
+        th {
+            text-align: left;
+            padding: 12px 14px;
+            font-weight: 700;
+            color: #334155;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        tbody tr:hover { background: #f8fafc; }
+
+        .file-name { font-weight: 600; color: #1e293b; }
+
+        .actions { display: flex; gap: 8px; }
+
+        .btn-small {
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn-download { background: #3b82f6; color: #fff; }
+        .btn-download:hover { background: #2563eb; }
+
+        .btn-delete { background: #fee2e2; color: #b91c1c; }
+        .btn-delete:hover { background: #fecaca; }
+
+        .btn-account-delete {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #b91c1c;
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-account-delete:hover {
+            background: #fecaca;
+            border-color: #fca5a5;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+            font-size: 15px;
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 24px 18px; }
+            th, td { padding: 10px 8px; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .user-block { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo">Cloud<span>Sprint</span></div>
+        <div class="user-block">
+            <span class="user-name" th:if="${userName}"
+                  th:text="'Пользователь: ' + ${userName}"></span>
+            <form th:action="@{/account/delete}" method="post" style="margin:0"
+                  onsubmit="return confirm('Удалить аккаунт и все файлы? Это необратимо.');">
+                <button type="submit" class="btn-account-delete">Удалить аккаунт</button>
+            </form>
+            <form th:action="@{/logout}" method="post" style="margin:0">
+                <button type="submit" class="btn-logout">Выйти</button>
+            </form>
+        </div>
+    </div>
+
+    <p th:if="${error}" class="error" th:text="${error}"></p>
+
+    <form th:action="@{/files/upload}" method="post"
+          enctype="multipart/form-data" class="upload">
+        <input type="file" name="file" required>
+        <button type="submit" class="btn-upload">Загрузить</button>
+    </form>
+
+    <table th:if="${!files.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Имя файла</th>
+            <th>Размер (байт)</th>
+            <th>Тип</th>
+            <th>Загружен</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="f : ${files}">
+            <td class="file-name" th:text="${f.fileName}"></td>
+            <td th:text="${f.fileSize}"></td>
+            <td th:text="${f.contentType}"></td>
+            <td th:text="${#temporals.format(f.uploadedAt, 'dd.MM.yyyy HH:mm')}"></td>
+            <td>
+                <div class="actions">
+                    <a th:href="@{/files/download/{id}(id=${f.id})}"
+                       class="btn-small btn-download">Скачать</a>
+                    <form th:action="@{/files/delete/{id}(id=${f.id})}" method="post"
+                          style="margin:0"
+                          onsubmit="return confirm('Удалить файл?')">
+                        <button type="submit" class="btn-small btn-delete">Удалить</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${files.isEmpty()}" class="empty">
+        Файлов пока нет. Загрузите первый файл выше.
+    </p>
+
+</div>
+
+</body>
+</html>

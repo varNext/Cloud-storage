@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — Cloud Sprint</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6, #06b6d4);
+            padding: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+        }
+        .logo span { color: #06b6d4; }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 26px;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+            margin-bottom: 16px;
+        }
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+        }
+
+        .row { display: flex; gap: 12px; }
+        .row > div { flex: 1; }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 4px;
+        }
+        button:hover { box-shadow: 0 8px 20px rgba(59,130,246,.35); }
+
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .footer a { color: #3b82f6; font-weight: 600; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="logo">Cloud<span>Sprint</span></div>
+    <p class="subtitle">Создайте новый аккаунт</p>
+
+    <p th:if="${error}" class="error" th:text="${error}"></p>
+
+    <form th:action="@{/register}" th:object="${user}" method="post">
+        <label for="userName">Логин</label>
+        <input type="text" id="userName" th:field="*{userName}"
+               placeholder="3–50 символов: буквы, цифры, _ и -"
+               required minlength="3" maxlength="50" autofocus>
+
+        <label for="password">Пароль</label>
+        <input type="password" id="password" th:field="*{password}"
+               placeholder="Не менее 6 символов"
+               required minlength="6" maxlength="100">
+
+        <div class="row">
+            <div>
+                <label for="firstName">Имя</label>
+                <input type="text" id="firstName" th:field="*{firstName}"
+                       placeholder="Иван" required maxlength="100">
+            </div>
+            <div>
+                <label for="lastName">Фамилия</label>
+                <input type="text" id="lastName" th:field="*{lastName}"
+                       placeholder="Иванов" required maxlength="100">
+            </div>
+        </div>
+
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+
+    <p class="footer">Уже есть аккаунт? <a th:href="@{/login}">Войти</a></p>
+</div>
+
+</body>
+</html>
